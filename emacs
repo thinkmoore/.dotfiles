@@ -1,7 +1,7 @@
 (setq-default TeX-master nil)
 (setq TeX-parse-self t)
 (setq TeX-auto-save t)
-(load-file "/usr/ProofGeneral/generic/proof-site.el")
+;;(load-file "/usr/ProofGeneral/generic/proof-site.el")
 
 ;; Turn off the GUI
 (if (fboundp 'tool-bar-mode) (tool-bar-mode -1))
