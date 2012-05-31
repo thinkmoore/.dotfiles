@@ -34,6 +34,7 @@ plugins=(git ant osx svn)
 source $ZSH/oh-my-zsh.sh
 
 export TERM=xterm-256color
+export EDITOR=emacs
 
 # Customize to your needs...
 export PATH=/usr/bin:/bin:/usr/sbin:/sbin:/usr/local/bin:/usr/X11/bin
