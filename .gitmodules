@@ -1,15 +1,3 @@
-[submodule "apel"]
-	path = apel
-	url = https://github.com/wanderlust/apel.git
-[submodule "flim"]
-	path = flim
-	url = https://github.com/wanderlust/flim.git
-[submodule "semi"]
-	path = semi
-	url = https://github.com/wanderlust/semi.git
-[submodule "wanderlust"]
-	path = wanderlust
-	url = https://github.com/wanderlust/wanderlust.git
 [submodule "oh-my-zsh"]
 	path = oh-my-zsh
 	url = https://github.com/thinkmoore/oh-my-zsh.git
