@@ -1,7 +1,6 @@
 (setq-default TeX-master nil)
 (setq TeX-parse-self t)
 (setq TeX-auto-save t)
-;;(load-file "/usr/ProofGeneral/generic/proof-site.el")
 
 ;; Turn off the GUI
 (if (fboundp 'tool-bar-mode) (tool-bar-mode -1))
@@ -36,6 +35,13 @@
 (add-hook 'LaTeX-mode-hook '(lambda()    (local-set-key (kbd "<f6>") (kbd "C-x C-s C-c C-c C-j"))))
 
 (setq-default c-basic-offset 4)
+
+;; modes
+;;(load-file "/usr/ProofGeneral/generic/proof-site.el")
+(autoload 'run-prolog "prolog" "Start a Prolog sub-process." t)
+(autoload 'prolog-mode "prolog" "Major mode for editing Prolog programs." t)
+(setq prolog-system 'swi)
+(setq auto-mode-alist (append '(("\\.pl$" . prolog-mode)) auto-mode-alist))
 
 ;; jif files should open in java-mode
 (add-to-list 'auto-mode-alist '("[.]jif$" . java-mode))
