@@ -40,6 +40,7 @@
 ;;(load-file "/usr/ProofGeneral/generic/proof-site.el")
 (autoload 'run-prolog "prolog" "Start a Prolog sub-process." t)
 (autoload 'prolog-mode "prolog" "Major mode for editing Prolog programs." t)
+(setq-default prolog-indent-width 4)
 (setq prolog-system 'swi)
 (setq auto-mode-alist (append '(("\\.pl$" . prolog-mode)) auto-mode-alist))
 
