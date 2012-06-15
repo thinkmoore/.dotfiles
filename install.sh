@@ -16,11 +16,13 @@ remove .emacs
 remove .emacs.d
 remove .zshrc
 remove .oh-my-zsh
+remove .folders
 
 ln -s $DIR/emacs .emacs
 ln -s $DIR/emacs.d .emacs.d
 ln -s $DIR/zshrc .zshrc
 ln -s $DIR/oh-my-zsh .oh-my-zsh
+ln -s $DIR/folders .folders
 
 echo "Done."
 
