@@ -14,14 +14,9 @@ pushd ~
 
 remove .emacs
 remove .emacs.d
-remove .zshrc
-remove .bashrc
-remove .oh-my-zsh
-remove .folders
 
 ln -s $DIR/emacs .emacs
 ln -s $DIR/emacs.d .emacs.d
-ln -s $DIR/bashrc .bashrc
 
 echo "Done."
 
