@@ -31,6 +31,10 @@
 ;; fast goto line
 (global-set-key (kbd "M-l") 'goto-line)
 
+;; backups in less annoying places
+(setq backup-directory-alist `(("." . "~/.saves")))
+(setq backup-by-copying-when-linked t)
+
 ;; quick compile latex
 (add-hook 'LaTeX-mode-hook '(lambda()    (local-set-key (kbd "<f6>") (kbd "C-x C-s C-c C-c C-j"))))
 
