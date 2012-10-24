@@ -38,10 +38,14 @@
 ;; quick compile latex
 (add-hook 'LaTeX-mode-hook '(lambda()    (local-set-key (kbd "<f6>") (kbd "C-x C-s C-c C-c C-j"))))
 
-(setq-default c-basic-offset 2)
+;; Proof general
+(load-file "~/.emacs.d/ProofGeneral/generic/proof-site.el")
+(add-hook 'coq-mode-hook '(lambda()
+			    (local-unset-key (kbd "C-c ."))
+			    (local-set-key (kbd "C-c .") 'proof-goto-point)))
 
-;; modes
-;;(load-file "/usr/ProofGeneral/generic/proof-site.el")
+
+;; Prolog mode
 (autoload 'run-prolog "prolog" "Start a Prolog sub-process." t)
 (autoload 'prolog-mode "prolog" "Major mode for editing Prolog programs." t)
 (setq-default prolog-indent-width 4)
@@ -52,6 +56,7 @@
 (add-to-list 'auto-mode-alist '("[.]jif$" . java-mode))
 
 ;; for auto-completion for C/C++
+(setq-default c-basic-offset 2)
 (add-to-list 'load-path "~/.emacs.d")
 (require 'auto-complete-config)
 (add-to-list 'ac-dictionary-directories "~/.emacs.d/ac-dict")
