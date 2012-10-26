@@ -34,6 +34,7 @@
 ;; backups in less annoying places
 (setq backup-directory-alist `(("." . "~/.saves")))
 (setq backup-by-copying-when-linked t)
+(setq auto-save-file-name-transforms '((".*" "~/.saves/\\1" t)))
 
 ;; quick compile latex
 (add-hook 'LaTeX-mode-hook '(lambda()    (local-set-key (kbd "<f6>") (kbd "C-x C-s C-c C-c C-j"))))
@@ -87,3 +88,4 @@
   (setq ac-sources (append '(ac-source-clang ac-source-yasnippet) ac-sources)))
 (add-hook 'c-mode-common-hook 'my-ac-cc-mode-setup)
 (my-ac-config)
+
