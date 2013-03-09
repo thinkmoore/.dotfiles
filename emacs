@@ -56,8 +56,14 @@
 ;; jif files should open in java-mode
 (add-to-list 'auto-mode-alist '("[.]jif$" . java-mode))
 
+;; formatting for C/C++
+(defun my-c-formatting ()
+  (setq-default c-basic-offset 2)
+  (c-set-offset 'innamespace 0))
+(add-hook 'c-mode-hook 'my-c-formatting)
+(add-hook 'c++-mode-hook 'my-c-formatting)
+
 ;; for auto-completion for C/C++
-(setq-default c-basic-offset 2)
 (add-to-list 'load-path "~/.emacs.d")
 (require 'auto-complete-config)
 (add-to-list 'ac-dictionary-directories "~/.emacs.d/ac-dict")
@@ -66,16 +72,19 @@
 (setq ac-auto-start nil)
 (setq ac-quick-help-delay 0.5)
 (ac-set-trigger-key "TAB")
-;;(define-key ac-mode-map [tab] `auto-complete)
 (defun my-ac-config ()
   (setq ac-clang-flags (split-string "
-    -I/Users/scott/research/miso/llvm/include
-    -I/Users/scott/research/miso/miso/include
-    -I/usr/include/c++/4.2.1
-    -I/usr/include/c++/4.2.1/backward
-    -I/usr/local/include
-    -I/Developer/usr/bin/../lib/clang/2.1/include
-    -I/usr/include
+-I/home/cscollab-sdmoore/install/include
+-I/home/cscollab-sdmoore/tools/include
+-I/home/cscollab-sdmoore/miso/include
+-I/home/cscollab-sdmoore/jitflow/include
+-I/home/cscollab-sdmoore/analysis/include
+-I/usr/include/c++/4.4.6
+-I/usr/include/c++/4.4.6/x86_64-redhat-linux
+-I/usr/include/c++/4.4.6/backward
+-I/usr/local/include
+-I/home/cscollab-sdmoore/tools/lib/clang/3.3/include
+-I/usr/include
   "))
   (setq-default ac-sources '(ac-source-abbrev ac-source-dictionary ac-source-words-in-same-mode-buffers))
   (add-hook 'emacs-lisp-mode-hook 'ac-emacs-lisp-mode-setup)
@@ -88,4 +97,3 @@
   (setq ac-sources (append '(ac-source-clang ac-source-yasnippet) ac-sources)))
 (add-hook 'c-mode-common-hook 'my-ac-cc-mode-setup)
 (my-ac-config)
-
