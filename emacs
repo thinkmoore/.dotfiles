@@ -1,3 +1,5 @@
+(load-theme 'wombat t)
+
 (setq-default TeX-master nil)
 (setq TeX-parse-self t)
 (setq TeX-auto-save t)

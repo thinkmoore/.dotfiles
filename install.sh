@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/local/bin/bash
 
 SOURCE="${BASH_SOURCE[0]}"
 while [ -h "$SOURCE" ] ; do SOURCE="$(readlink "$SOURCE")"; done
@@ -12,9 +12,13 @@ function remove() {
 
 pushd ~
 
+remove .bashrc
+remove .bash_profile
 remove .emacs
 remove .emacs.d
 
+ln -s $DIR/bashrc .bashrc
+ln -s $DIR/bash_profile .bash_profile
 ln -s $DIR/emacs .emacs
 ln -s $DIR/emacs.d .emacs.d
 
