@@ -2,10 +2,6 @@
 export CLICOLOR=1
 export LSCOLORS=ExFxCxDxBxegedabagacad
 
-# this is the script for interactive bash sessions                                                       
-echo "Running ~/.bash_profile"
-if [ -f ~/.bashrc ]; then . ~/.bashrc; fi
-
 bind '"\e[A"':history-search-backward
 bind '"\e[B"':history-search-forward
 
@@ -21,5 +17,6 @@ export TERM=xterm-256color
 
 # Load standard configuration information
 if [ -f ~/.bashrc ]; then
+   echo "Running ~/.bash_profile"
    source ~/.bashrc
 fi

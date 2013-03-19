@@ -43,5 +43,6 @@ fi
 
 # Load local configuration
 if [ -f ~/.bash_host ]; then
+   echo "Running ~/.bash_host"
    source ~/.bash_host
 fi
