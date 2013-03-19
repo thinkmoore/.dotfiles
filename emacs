@@ -1,5 +1,9 @@
 (load-theme 'wombat t)
 
+;; git!
+(require 'magit)
+(require 'magit-svn)
+
 (setq-default TeX-master nil)
 (setq TeX-parse-self t)
 (setq TeX-auto-save t)
