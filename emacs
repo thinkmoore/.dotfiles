@@ -1,8 +1,8 @@
 (load-theme 'wombat t)
 
 ;; git!
-(require 'magit)
-(require 'magit-svn)
+;;(require 'magit)
+;;(require 'magit-svn)
 (load-file "~/.emacs.d/git-commit.el")
 
 (setq-default TeX-master nil)
