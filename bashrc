@@ -1,6 +1,23 @@
 # If not running interactively, don't fo anything
 [ -z "$PS1" ] && return
 
+# colorize the CLI                                                                                       
+export CLICOLOR=1
+export LSCOLORS=ExFxCxDxBxegedabagacad
+
+bind '"\e[A"':history-search-backward
+bind '"\e[B"':history-search-forward
+
+# append history to the file,                                                                            
+shopt -s histappend
+export PROMPT_COMMAND='history -a'
+export HISTIGNORE="&:ls:[bf]g:exit:cd"
+export HISTCONTROL="ignoredups:erasedups"
+export FIGNORE="~"
+
+export EDITOR=emacs
+export TERM=xterm-256color
+
 # don't duplicate lines in the history
 HISTCONTROL=ignoredups:ignorespace
 
