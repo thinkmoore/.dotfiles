@@ -1,13 +1,18 @@
+(setq enable-local-variables :all)
+
+(require 'package)
+(add-to-list 'package-archives '("melpa" . "http://melpa.milkbox.net/packages/"))
+
 (load-theme 'wombat t)
 
-;; git!
-(require 'magit)
-(require 'magit-svn)
-(load-file "~/.emacs.d/git-commit.el")
+;; whitespace
+(require 'whitespace)
+(setq whitespace-style '(face empty tabs lines-tail trailing))
 
 (setq-default TeX-master nil)
 (setq TeX-parse-self t)
 (setq TeX-auto-save t)
+(setenv "PATH" (concat "/usr/texbin" ":" (getenv "PATH")))
 
 ;; Turn off the GUI
 (if (fboundp 'tool-bar-mode) (tool-bar-mode -1))
@@ -43,64 +48,47 @@
 (setq backup-by-copying-when-linked t)
 (setq auto-save-file-name-transforms '((".*" "~/.saves/\\1" t)))
 
-;; quick compile latex
+;; latex
 (add-hook 'LaTeX-mode-hook '(lambda()    (local-set-key (kbd "<f6>") (kbd "C-x C-s C-c C-c C-j"))))
+(add-hook 'LaTeX-mode-hook 'TeX-source-correlate-mode)
 
-;; Proof general
+(setq TeX-source-correlate-method 'synctex)
+
+(add-hook 'LaTeX-mode-hook
+      (lambda()
+        (add-to-list 'TeX-expand-list
+             '("%q" skim-make-url))))
+
+(defun skim-make-url () (concat
+        (TeX-current-line)
+        " "
+        (expand-file-name (funcall file (TeX-output-extension) t)
+            (file-name-directory (TeX-master-file)))
+        " "
+        (buffer-file-name)))
+
+(setq TeX-view-program-list
+      '(("Skim" "/Applications/Skim.app/Contents/SharedSupport/displayline %q")))
+
+(setq TeX-view-program-selection '((output-pdf "Skim")))
+
+;; jif files should open in java-mode
+(add-to-list 'auto-mode-alist '("[.]jif$" . java-mode))
+(add-to-list 'auto-mode-alist '("[.]jl5$" . java-mode))
+(add-to-list 'auto-mode-alist '("[.]jl$" . java-mode))
+(add-to-list 'auto-mode-alist '("[.]soup$" . java-mode))
+
+;; Coq
 (load-file "~/.emacs.d/ProofGeneral/generic/proof-site.el")
 (add-hook 'coq-mode-hook '(lambda()
 			    (local-unset-key (kbd "C-c ."))
 			    (local-set-key (kbd "C-c .") 'proof-goto-point)))
 
-
-;; Prolog mode
-(autoload 'run-prolog "prolog" "Start a Prolog sub-process." t)
-(autoload 'prolog-mode "prolog" "Major mode for editing Prolog programs." t)
-(setq-default prolog-indent-width 4)
-(setq prolog-system 'swi)
-(setq auto-mode-alist (append '(("\\.pl$" . prolog-mode)) auto-mode-alist))
-
-;; jif files should open in java-mode
-(add-to-list 'auto-mode-alist '("[.]jif$" . java-mode))
-
-;; formatting for C/C++
-(defun my-c-formatting ()
-  (setq-default c-basic-offset 2)
-  (c-set-offset 'innamespace 0))
-(add-hook 'c-mode-hook 'my-c-formatting)
-(add-hook 'c++-mode-hook 'my-c-formatting)
-
-;; for auto-completion for C/C++
-(add-to-list 'load-path "~/.emacs.d")
-(require 'auto-complete-config)
-(add-to-list 'ac-dictionary-directories "~/.emacs.d/ac-dict")
-(require 'yasnippet-bundle)
-(require 'auto-complete-clang)
-(setq ac-auto-start nil)
-(setq ac-quick-help-delay 0.5)
-(ac-set-trigger-key "TAB")
-(defun my-ac-config ()
-  (setq ac-clang-flags (split-string "
--I/home/cscollab-sdmoore/install/include
--I/home/cscollab-sdmoore/tools/include
--I/home/cscollab-sdmoore/miso/include
--I/home/cscollab-sdmoore/jitflow/include
--I/home/cscollab-sdmoore/analysis/include
--I/usr/include/c++/4.4.6
--I/usr/include/c++/4.4.6/x86_64-redhat-linux
--I/usr/include/c++/4.4.6/backward
--I/usr/local/include
--I/home/cscollab-sdmoore/tools/lib/clang/3.3/include
--I/usr/include
-  "))
-  (setq-default ac-sources '(ac-source-abbrev ac-source-dictionary ac-source-words-in-same-mode-buffers))
-  (add-hook 'emacs-lisp-mode-hook 'ac-emacs-lisp-mode-setup)
-  (add-hook 'c-mode-common-hook 'ac-cc-mode-setup)
-  (add-hook 'ruby-mode-hook 'ac-ruby-mode-setup)
-  (add-hook 'css-mode-hook 'ac-css-mode-setup)
-  (add-hook 'auto-complete-mode-hook 'ac-common-setup)
-  (global-auto-complete-mode t))
-(defun my-ac-cc-mode-setup ()
-  (setq ac-sources (append '(ac-source-clang ac-source-yasnippet) ac-sources)))
-(add-hook 'c-mode-common-hook 'my-ac-cc-mode-setup)
-(my-ac-config)
+;; Paredit all the things
+(autoload 'enable-paredit-mode "paredit" "Turn on pseudo-structural editing of Lisp code." t)
+(add-hook 'emacs-lisp-mode-hook       #'enable-paredit-mode)
+(add-hook 'eval-expression-minibuffer-setup-hook #'enable-paredit-mode)
+(add-hook 'ielm-mode-hook             #'enable-paredit-mode)
+(add-hook 'lisp-mode-hook             #'enable-paredit-mode)
+(add-hook 'lisp-interaction-mode-hook #'enable-paredit-mode)
+(add-hook 'scheme-mode-hook           #'enable-paredit-mode)
