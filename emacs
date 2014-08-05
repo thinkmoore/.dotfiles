@@ -3,8 +3,6 @@
 (require 'package)
 (add-to-list 'package-archives '("melpa" . "http://melpa.milkbox.net/packages/"))
 
-(load-theme 'wombat t)
-
 ;; whitespace
 (require 'whitespace)
 (setq whitespace-style '(face empty tabs lines-tail trailing))
@@ -15,8 +13,14 @@
 (setenv "PATH" (concat "/usr/texbin" ":" (getenv "PATH")))
 
 ;; Turn off the GUI
-(if (fboundp 'tool-bar-mode) (tool-bar-mode -1))
-(if (fboundp 'menu-bar-mode) (menu-bar-mode -1))
+(when (boundp 'aquamacs-version)
+  (tool-bar-mode -1)
+  (scroll-bar-mode -1)
+  (fringe-mode -1))
+(unless (boundp 'aquamacs-version)
+  (load-theme 'wombat t t)
+  (enable-theme 'wombat))
+(menu-bar-mode -1)
 
 ;; Space bar auto-complete for file names
 (define-key minibuffer-local-filename-completion-map
@@ -28,12 +32,12 @@
 
 ;; fast window switching
 (defun select-next-window ()
-  "Switch to the next window" 
+  "Switch to the next window"
   (interactive)
   (select-window (next-window)))
 
 (defun select-previous-window ()
-  "Switch to the previous window" 
+  "Switch to the previous window"
   (interactive)
   (select-window (previous-window)))
 
@@ -49,9 +53,12 @@
 (setq auto-save-file-name-transforms '((".*" "~/.saves/\\1" t)))
 
 ;; latex
-(add-hook 'LaTeX-mode-hook '(lambda()    (local-set-key (kbd "<f6>") (kbd "C-x C-s C-c C-c C-j"))))
-(add-hook 'LaTeX-mode-hook 'TeX-source-correlate-mode)
+(add-hook 'LaTeX-mode-hook
+	  '(lambda()
+	     (auto-fill-mode t)
+	     (local-set-key (kbd "<f6>") (kbd "C-x C-s C-c C-c C-j"))))
 
+(add-hook 'LaTeX-mode-hook 'TeX-source-correlate-mode)
 (setq TeX-source-correlate-method 'synctex)
 
 (add-hook 'LaTeX-mode-hook
@@ -78,6 +85,9 @@
 (add-to-list 'auto-mode-alist '("[.]jl$" . java-mode))
 (add-to-list 'auto-mode-alist '("[.]soup$" . java-mode))
 
+;; Prolog files should open in prolog-mode
+(add-to-list 'auto-mode-alist '("[.]pl$" . prolog-mode))
+
 ;; Coq
 (load-file "~/.emacs.d/ProofGeneral/generic/proof-site.el")
 (add-hook 'coq-mode-hook '(lambda()
@@ -92,3 +102,9 @@
 (add-hook 'lisp-mode-hook             #'enable-paredit-mode)
 (add-hook 'lisp-interaction-mode-hook #'enable-paredit-mode)
 (add-hook 'scheme-mode-hook           #'enable-paredit-mode)
+(custom-set-variables
+ ;; custom-set-variables was added by Custom.
+ ;; If you edit it by hand, you could mess it up, so be careful.
+ ;; Your init file should contain only one such instance.
+ ;; If there is more than one, they won't work right.
+ '(LaTeX-command "pdflatex"))
