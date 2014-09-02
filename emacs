@@ -3,6 +3,13 @@
 (require 'package)
 (add-to-list 'package-archives '("melpa" . "http://melpa.milkbox.net/packages/"))
 
+;; themes
+(add-to-list 'custom-theme-load-path "~/.emacs.d/themes")
+
+(add-hook 'after-init-hook 'my-after-init-hook)
+(defun my-after-init-hook ()
+  (load-theme 'think-cyberpunk t))
+
 ;; whitespace
 (require 'whitespace)
 (setq whitespace-style '(face empty tabs lines-tail trailing))
@@ -16,11 +23,8 @@
 (when (boundp 'aquamacs-version)
   (tool-bar-mode -1)
   (scroll-bar-mode -1)
-  (fringe-mode -1))
-(unless (boundp 'aquamacs-version)
-  (load-theme 'wombat t t)
-  (enable-theme 'wombat))
-(menu-bar-mode -1)
+  (fringe-mode -1)
+  (tabbar-mode 0))
 
 ;; Space bar auto-complete for file names
 (define-key minibuffer-local-filename-completion-map
@@ -102,9 +106,3 @@
 (add-hook 'lisp-mode-hook             #'enable-paredit-mode)
 (add-hook 'lisp-interaction-mode-hook #'enable-paredit-mode)
 (add-hook 'scheme-mode-hook           #'enable-paredit-mode)
-(custom-set-variables
- ;; custom-set-variables was added by Custom.
- ;; If you edit it by hand, you could mess it up, so be careful.
- ;; Your init file should contain only one such instance.
- ;; If there is more than one, they won't work right.
- '(LaTeX-command "pdflatex"))
