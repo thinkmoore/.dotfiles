@@ -15,7 +15,6 @@ export HISTIGNORE="&:ls:[bf]g:exit:cd"
 export HISTCONTROL="ignoredups:erasedups"
 export FIGNORE="~"
 
-export EDITOR=aquamacs
 export TERM=xterm-256color
 
 # don't duplicate lines in the history
@@ -57,8 +56,6 @@ alias alert='notify-send --urgency=low -i "$([ $? = 0 ] && echo terminal || echo
 if [ -f /etc/bash_completion ] && ! shopt -oq posix; then
     . /etc/bash_completion
 fi
-
-alias emacs='aquamacs'
 
 # Load local configuration
 if [ -f ~/.bash_host ]; then

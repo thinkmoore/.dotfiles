@@ -1,0 +1,19 @@
+## Longhorn Inspirat (Metacity Port)
+## SystemX <systemx@comcast.net>
+## Original GTK2/MCITY by roberTo <http://www.users.monornet.hu/linux/files/Longhorn_Inspirat.tar.bz2>
+
+button_offset=3
+button_spacing=0
+full_width_title=true
+#title_horizontal_offset=-3
+title_vertical_offset_active=0
+title_vertical_offset_inactive=0
+button_layout=|HMC
+active_text_color=#ffffff
+inactive_text_color=#858586
+#shadow_delta_height=2
+shadow_delta_width=0
+shadow_delta_x=0
+shadow_delta_y=0
+
+

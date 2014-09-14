@@ -8,7 +8,8 @@
 
 (add-hook 'after-init-hook 'my-after-init-hook)
 (defun my-after-init-hook ()
-  (load-theme 'think-cyberpunk t))
+  (load-theme 'think-cyberpunk t)
+  (set-default-font "Monospace-10"))
 
 ;; whitespace
 (require 'whitespace)
@@ -25,6 +26,10 @@
   (scroll-bar-mode -1)
   (fringe-mode -1)
   (tabbar-mode 0))
+
+(tool-bar-mode -1)
+(scroll-bar-mode -1)
+(fringe-mode -1)
 
 ;; Space bar auto-complete for file names
 (define-key minibuffer-local-filename-completion-map
@@ -65,23 +70,23 @@
 (add-hook 'LaTeX-mode-hook 'TeX-source-correlate-mode)
 (setq TeX-source-correlate-method 'synctex)
 
-(add-hook 'LaTeX-mode-hook
-      (lambda()
-        (add-to-list 'TeX-expand-list
-             '("%q" skim-make-url))))
+;; (add-hook 'LaTeX-mode-hook
+;;       (lambda()
+;;         (add-to-list 'TeX-expand-list
+;;              '("%q" skim-make-url))))
 
-(defun skim-make-url () (concat
-        (TeX-current-line)
-        " "
-        (expand-file-name (funcall file (TeX-output-extension) t)
-            (file-name-directory (TeX-master-file)))
-        " "
-        (buffer-file-name)))
+;; (defun skim-make-url () (concat
+;;         (TeX-current-line)
+;;         " "
+;;         (expand-file-name (funcall file (TeX-output-extension) t)
+;;             (file-name-directory (TeX-master-file)))
+;;         " "
+;;         (buffer-file-name)))
 
-(setq TeX-view-program-list
-      '(("Skim" "/Applications/Skim.app/Contents/SharedSupport/displayline %q")))
+;; (setq TeX-view-program-list
+;;       '(("Skim" "/Applications/Skim.app/Contents/SharedSupport/displayline %q")))
 
-(setq TeX-view-program-selection '((output-pdf "Skim")))
+;; (setq TeX-view-program-selection '((output-pdf "Skim")))
 
 ;; jif files should open in java-mode
 (add-to-list 'auto-mode-alist '("[.]jif$" . java-mode))
@@ -106,3 +111,15 @@
 (add-hook 'lisp-mode-hook             #'enable-paredit-mode)
 (add-hook 'lisp-interaction-mode-hook #'enable-paredit-mode)
 (add-hook 'scheme-mode-hook           #'enable-paredit-mode)
+(custom-set-variables
+ ;; custom-set-variables was added by Custom.
+ ;; If you edit it by hand, you could mess it up, so be careful.
+ ;; Your init file should contain only one such instance.
+ ;; If there is more than one, they won't work right.
+ '(inhibit-startup-screen t))
+(custom-set-faces
+ ;; custom-set-faces was added by Custom.
+ ;; If you edit it by hand, you could mess it up, so be careful.
+ ;; Your init file should contain only one such instance.
+ ;; If there is more than one, they won't work right.
+ )
