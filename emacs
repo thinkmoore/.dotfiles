@@ -1,7 +1,9 @@
 (setq enable-local-variables :all)
 
 (require 'package)
-(add-to-list 'package-archives '("melpa" . "http://melpa.milkbox.net/packages/"))
+(add-to-list 'package-archives
+	     '("melpa" . "http://melpa.milkbox.net/packages/")
+	     t)
 
 ;; themes
 (add-to-list 'custom-theme-load-path "~/.emacs.d/themes")
@@ -18,14 +20,14 @@
 (setq-default TeX-master nil)
 (setq TeX-parse-self t)
 (setq TeX-auto-save t)
-(setenv "PATH" (concat "/usr/texbin" ":" (getenv "PATH")))
 
-;; Turn off the GUI
-(when (boundp 'aquamacs-version)
-  (tool-bar-mode -1)
-  (scroll-bar-mode -1)
-  (fringe-mode -1)
-  (tabbar-mode 0))
+(defun set-exec-path-from-shell-PATH ()
+  (let ((path-from-shell 
+      (replace-regexp-in-string "[[:space:]\n]*$" "" 
+        (shell-command-to-string "$SHELL -l -c 'echo $PATH'"))))
+    (setenv "PATH" path-from-shell)
+    (setq exec-path (split-string path-from-shell path-separator))))
+(when (equal system-type 'darwin) (set-exec-path-from-shell-PATH))
 
 (tool-bar-mode -1)
 (scroll-bar-mode -1)
@@ -70,23 +72,33 @@
 (add-hook 'LaTeX-mode-hook 'TeX-source-correlate-mode)
 (setq TeX-source-correlate-method 'synctex)
 
-;; (add-hook 'LaTeX-mode-hook
-;;       (lambda()
-;;         (add-to-list 'TeX-expand-list
-;;              '("%q" skim-make-url))))
+(require 'cl)
 
-;; (defun skim-make-url () (concat
-;;         (TeX-current-line)
-;;         " "
-;;         (expand-file-name (funcall file (TeX-output-extension) t)
-;;             (file-name-directory (TeX-master-file)))
-;;         " "
-;;         (buffer-file-name)))
+(defun* get-closest-pathname (&optional (file "Makefile"))
+  "Determine the pathname of the first instance of FILE starting from the current directory towards root.
+This may not do the correct thing in presence of links. If it does not find FILE, then it shall return the name
+of FILE in the current directory, suitable for creation"
+  (let ((root (expand-file-name "/"))) ; the win32 builds should translate this correctly
+    (loop 
+     for d = default-directory then (expand-file-name ".." d)
+     if (file-exists-p (expand-file-name file d))
+     return d
+     if (equal d root)
+     return nil)))
 
-;; (setq TeX-view-program-list
-;;       '(("Skim" "/Applications/Skim.app/Contents/SharedSupport/displayline %q")))
+(defun scribble-mode ()
+  (text-mode)
+  (defun do-compile ()
+    (interactive nil)
+    (set (make-local-variable 'compile-command) (format "cd %s && make" (get-closest-pathname))
+;	 (format "make -f %s" (expand-file-name "Makefile" (get-closest-pathname)))
+	 )
+    (setq compilation-read-command nil)
+    (let ((default-directory (get-closest-pathname)))
+      (call-interactively 'compile)))
+  (local-set-key (kbd "C-c C-c") 'do-compile))
 
-;; (setq TeX-view-program-selection '((output-pdf "Skim")))
+(add-to-list 'auto-mode-alist '("[.]scrbl" . scribble-mode))
 
 ;; jif files should open in java-mode
 (add-to-list 'auto-mode-alist '("[.]jif$" . java-mode))
@@ -103,6 +115,8 @@
 			    (local-unset-key (kbd "C-c ."))
 			    (local-set-key (kbd "C-c .") 'proof-goto-point)))
 
+(add-to-list 'auto-mode-alist '("[.]rkt$" . racket-mode))
+
 ;; Paredit all the things
 (autoload 'enable-paredit-mode "paredit" "Turn on pseudo-structural editing of Lisp code." t)
 (add-hook 'emacs-lisp-mode-hook       #'enable-paredit-mode)
@@ -111,15 +125,25 @@
 (add-hook 'lisp-mode-hook             #'enable-paredit-mode)
 (add-hook 'lisp-interaction-mode-hook #'enable-paredit-mode)
 (add-hook 'scheme-mode-hook           #'enable-paredit-mode)
+(add-hook 'racket-mode-hook           #'enable-paredit-mode)
 (custom-set-variables
  ;; custom-set-variables was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
- '(inhibit-startup-screen t))
+ ;; '(exec-path
+ ;;   (quote
+ ;;    ("/usr/bin" "/bin" "/usr/sbin" "/sbin" "/usr/local/Cellar/emacs/24.4/libexec/emacs/24.4/x86_64-apple-darwin14.0.0" "/usr/local/bin" "/Users/sdmoore/Documents/racket/racket/bin")))
+ '(inhibit-startup-screen t)
+ '(ispell-program-name "aspell")
+ '(racket-racket-program "/Users/sdmoore/Documents/racket/racket/bin/racket")
+ '(racket-raco-program "/Users/sdmoore/Documents/racket/racket/bin/raco"))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
  )
+
+; Spelling
+(add-hook 'tex-mode-hook 'flyspell-mode)
