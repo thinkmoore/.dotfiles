@@ -8,10 +8,21 @@
 ;; themes
 (add-to-list 'custom-theme-load-path "~/.emacs.d/themes")
 
+(require 'company)
+
 (add-hook 'after-init-hook 'my-after-init-hook)
 (defun my-after-init-hook ()
   (load-theme 'think-cyberpunk t)
-  (set-default-font "Monospace-10"))
+  (set-default-font "Monospace-10")
+  (unless (prelude-packages-installed-p)
+    ;; check for new packages (package versions)
+    (message "%s" "Emacs Prelude is now refreshing its package database...")
+    (package-refresh-contents)
+    (message "%s" " done.")
+    ;; install the missing packages
+    (dolist (p prelude-packages)
+      (when (not (package-installed-p p))
+	(package-install p)))))
 
 ;; whitespace
 (require 'whitespace)
@@ -21,6 +32,7 @@
 (setq TeX-parse-self t)
 (setq TeX-auto-save t)
 
+<<<<<<< HEAD
 (defun set-exec-path-from-shell-PATH ()
   (let ((path-from-shell 
       (replace-regexp-in-string "[[:space:]\n]*$" "" 
@@ -117,6 +129,9 @@ of FILE in the current directory, suitable for creation"
 
 (add-to-list 'auto-mode-alist '("[.]rkt$" . racket-mode))
 
+;; Prolog files should open in prolog-mode
+(add-to-list 'auto-mode-alist '("[.]pl$" . prolog-mode))
+
 ;; Paredit all the things
 (autoload 'enable-paredit-mode "paredit" "Turn on pseudo-structural editing of Lisp code." t)
 (add-hook 'emacs-lisp-mode-hook       #'enable-paredit-mode)
@@ -126,6 +141,41 @@ of FILE in the current directory, suitable for creation"
 (add-hook 'lisp-interaction-mode-hook #'enable-paredit-mode)
 (add-hook 'scheme-mode-hook           #'enable-paredit-mode)
 (add-hook 'racket-mode-hook           #'enable-paredit-mode)
+
+(eval-after-load 'haskell-mode
+  '(define-key haskell-mode-map [f8] 'haskell-navigate-imports))
+
+(let ((my-cabal-path (expand-file-name "~/.cabal/bin")))
+  (setenv "PATH" (concat my-cabal-path ":" (getenv "PATH")))
+  (add-to-list 'exec-path (expand-file-name "~/Library/Haskell/bin"))
+  (add-to-list 'exec-path my-cabal-path))
+
+(eval-after-load 'haskell-mode '(progn
+  (define-key haskell-mode-map (kbd "C-c C-l") 'haskell-process-load-or-reload)
+  (define-key haskell-mode-map (kbd "C-c C-z") 'haskell-interactive-switch)
+  (define-key haskell-mode-map (kbd "C-c C-n C-t") 'haskell-process-do-type)
+  (define-key haskell-mode-map (kbd "C-c C-n C-i") 'haskell-process-do-info)
+  (define-key haskell-mode-map (kbd "C-c C-n C-c") 'haskell-process-cabal-build)
+  (define-key haskell-mode-map (kbd "C-c C-n c") 'haskell-process-cabal)
+  (define-key haskell-mode-map (kbd "SPC") 'haskell-mode-contextual-space)))
+(eval-after-load 'haskell-cabal '(progn
+  (define-key haskell-cabal-mode-map (kbd "C-c C-z") 'haskell-interactive-switch)
+  (define-key haskell-cabal-mode-map (kbd "C-c C-k") 'haskell-interactive-mode-clear)
+  (define-key haskell-cabal-mode-map (kbd "C-c C-c") 'haskell-process-cabal-build)
+  (define-key haskell-cabal-mode-map (kbd "C-c c") 'haskell-process-cabal)))
+
+(autoload 'ghc-init "ghc" nil t)
+(autoload 'ghc-debug "ghc" nil t)
+(add-hook 'haskell-mode-hook
+	  (lambda ()
+	    (ghc-init)
+	    (turn-on-haskell-indentation)
+	    (company-mode)))
+
+(add-to-list 'company-backends 'company-ghc)
+(custom-set-variables '(company-ghc-show-info t))
+
+>>>>>>> 6ad65b42b57e189835806683234a0e6df6812f9c
 (custom-set-variables
  ;; custom-set-variables was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
@@ -134,8 +184,13 @@ of FILE in the current directory, suitable for creation"
  ;; '(exec-path
  ;;   (quote
  ;;    ("/usr/bin" "/bin" "/usr/sbin" "/sbin" "/usr/local/Cellar/emacs/24.4/libexec/emacs/24.4/x86_64-apple-darwin14.0.0" "/usr/local/bin" "/Users/sdmoore/Documents/racket/racket/bin")))
- '(inhibit-startup-screen t)
  '(ispell-program-name "aspell")
+ '(haskell-process-type 'cabal-repl)
+ '(haskell-tags-on-save t)
+ '(haskell-process-suggest-remove-import-lines t)
+ '(haskell-process-auto-import-loaded-modules t)
+ '(haskell-process-log t)
+ '(inhibit-startup-screen t)
  '(racket-racket-program "/Users/sdmoore/Documents/racket/racket/bin/racket")
  '(racket-raco-program "/Users/sdmoore/Documents/racket/racket/bin/raco"))
 (custom-set-faces
