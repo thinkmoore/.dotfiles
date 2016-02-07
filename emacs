@@ -5,7 +5,7 @@
 (package-initialize)
 
 (defvar prelude-packages
-  '(auctex haskell-mode magit paredit racket-mode)
+  '(haskell-mode magit paredit racket-mode)
   "A list of packages to ensure are installed at launch.")
 
 (defun prelude-packages-installed-p ()
@@ -22,16 +22,16 @@
 (add-hook 'after-init-hook 'my-after-init-hook)
 (defun my-after-init-hook ()
   (load-theme 'think-cyberpunk t)
-  (set-default-font "Monospace-10")
-  (unless (prelude-packages-installed-p)
-    ;; check for new packages (package versions)
-    (message "%s" "Emacs Prelude is now refreshing its package database...")
-    (package-refresh-contents)
-    (message "%s" " done.")
-    ;; install the missing packages
-    (dolist (p prelude-packages)
-      (when (not (package-installed-p p))
-	(package-install p)))))
+  ;; (unless (prelude-packages-installed-p)
+  ;;   ;; check for new packages (package versions)
+  ;;   (message "%s" "Emacs Prelude is now refreshing its package database...")
+  ;;   (package-refresh-contents)
+  ;;   (message "%s" " done.")
+  ;;   ;; install the missing packages
+  ;;   (dolist (p prelude-packages)
+  ;;     (when (not (package-installed-p p))
+  ;; 	(package-install p))))
+  )
 
 ;; whitespace
 (require 'whitespace)
@@ -42,6 +42,7 @@
 (setq TeX-auto-save t)
 (setenv "PATH" (concat "/usr/texbin" ":" (getenv "PATH")))
 
+(menu-bar-mode -1)
 (tool-bar-mode -1)
 (scroll-bar-mode -1)
 (fringe-mode -1)
@@ -96,6 +97,7 @@
 (add-hook 'lisp-mode-hook             #'enable-paredit-mode)
 (add-hook 'lisp-interaction-mode-hook #'enable-paredit-mode)
 (add-hook 'scheme-mode-hook           #'enable-paredit-mode)
+(add-hook 'racket-mode-hook           #'enable-paredit-mode)
 
 (eval-after-load 'haskell-mode
   '(define-key haskell-mode-map [f8] 'haskell-navigate-imports))
@@ -128,24 +130,26 @@
 	    (company-mode)))
 
 (add-to-list 'company-backends 'company-ghc)
-(custom-set-variables '(company-ghc-show-info t))
-
 (custom-set-variables
  ;; custom-set-variables was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
- '(haskell-process-type 'cabal-repl)
- '(haskell-tags-on-save t)
- '(haskell-process-suggest-remove-import-lines t)
+ '(company-ghc-show-info t)
  '(haskell-process-auto-import-loaded-modules t)
  '(haskell-process-log t)
+ '(haskell-process-suggest-remove-import-lines t)
+ '(haskell-process-type (quote cabal-repl))
+ '(haskell-tags-on-save t)
  '(inhibit-startup-screen t)
- '(racket-racket-program "/Users/sdmoore/Documents/racket/racket/bin/racket")
- '(racket-raco-program "/Users/sdmoore/Documents/racket/racket/bin/raco"))
+ '(racket-racket-program "/home/sdmoore/racket/racket/bin/racket")
+ '(racket-raco-program "/home/sdmoore/racket/racket/bin/raco")
+ '(tool-bar-mode nil))
+
+
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
- )
+ '(default ((t (:family "Source Code Pro" :foundry "adobe" :slant normal :weight normal :height 98 :width normal)))))
