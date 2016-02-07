@@ -1,18 +1,10 @@
 (setq enable-local-variables :all)
 
 (require 'package)
-(add-to-list 'package-archives '("melpa" . "http://melpa.milkbox.net/packages/"))
+(add-to-list 'package-archives
+	     '("melpa" . "http://melpa.milkbox.net/packages/")
+	     t)
 (package-initialize)
-
-(defvar prelude-packages
-  '(haskell-mode magit paredit racket-mode)
-  "A list of packages to ensure are installed at launch.")
-
-(defun prelude-packages-installed-p ()
-  (let ((installed t))
-    (dolist (p prelude-packages)
-      (when (not (package-installed-p p))
-	(setq installed nil)))))
 
 ;; themes
 (add-to-list 'custom-theme-load-path "~/.emacs.d/themes")
@@ -40,7 +32,15 @@
 (setq-default TeX-master nil)
 (setq TeX-parse-self t)
 (setq TeX-auto-save t)
-(setenv "PATH" (concat "/usr/texbin" ":" (getenv "PATH")))
+
+<<<<<<< HEAD
+(defun set-exec-path-from-shell-PATH ()
+  (let ((path-from-shell 
+      (replace-regexp-in-string "[[:space:]\n]*$" "" 
+        (shell-command-to-string "$SHELL -l -c 'echo $PATH'"))))
+    (setenv "PATH" path-from-shell)
+    (setq exec-path (split-string path-from-shell path-separator))))
+(when (equal system-type 'darwin) (set-exec-path-from-shell-PATH))
 
 (menu-bar-mode -1)
 (tool-bar-mode -1)
@@ -85,6 +85,51 @@
 
 (add-hook 'LaTeX-mode-hook 'TeX-source-correlate-mode)
 (setq TeX-source-correlate-method 'synctex)
+
+(require 'cl)
+
+(defun* get-closest-pathname (&optional (file "Makefile"))
+  "Determine the pathname of the first instance of FILE starting from the current directory towards root.
+This may not do the correct thing in presence of links. If it does not find FILE, then it shall return the name
+of FILE in the current directory, suitable for creation"
+  (let ((root (expand-file-name "/"))) ; the win32 builds should translate this correctly
+    (loop 
+     for d = default-directory then (expand-file-name ".." d)
+     if (file-exists-p (expand-file-name file d))
+     return d
+     if (equal d root)
+     return nil)))
+
+(defun scribble-mode ()
+  (text-mode)
+  (defun do-compile ()
+    (interactive nil)
+    (set (make-local-variable 'compile-command) (format "cd %s && make" (get-closest-pathname))
+;	 (format "make -f %s" (expand-file-name "Makefile" (get-closest-pathname)))
+	 )
+    (setq compilation-read-command nil)
+    (let ((default-directory (get-closest-pathname)))
+      (call-interactively 'compile)))
+  (local-set-key (kbd "C-c C-c") 'do-compile))
+
+(add-to-list 'auto-mode-alist '("[.]scrbl" . scribble-mode))
+
+;; jif files should open in java-mode
+(add-to-list 'auto-mode-alist '("[.]jif$" . java-mode))
+(add-to-list 'auto-mode-alist '("[.]jl5$" . java-mode))
+(add-to-list 'auto-mode-alist '("[.]jl$" . java-mode))
+(add-to-list 'auto-mode-alist '("[.]soup$" . java-mode))
+
+;; Prolog files should open in prolog-mode
+(add-to-list 'auto-mode-alist '("[.]pl$" . prolog-mode))
+
+;; Coq
+(load-file "~/.emacs.d/ProofGeneral/generic/proof-site.el")
+(add-hook 'coq-mode-hook '(lambda()
+			    (local-unset-key (kbd "C-c ."))
+			    (local-set-key (kbd "C-c .") 'proof-goto-point)))
+
+(add-to-list 'auto-mode-alist '("[.]rkt$" . racket-mode))
 
 ;; Prolog files should open in prolog-mode
 (add-to-list 'auto-mode-alist '("[.]pl$" . prolog-mode))
@@ -135,7 +180,13 @@
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
- '(company-ghc-show-info t)
+ ;; '(exec-path
+ ;;   (quote
+ ;;    ("/usr/bin" "/bin" "/usr/sbin" "/sbin" "/usr/local/Cellar/emacs/24.4/libexec/emacs/24.4/x86_64-apple-darwin14.0.0" "/usr/local/bin" "/Users/sdmoore/Documents/racket/racket/bin")))
+ '(ispell-program-name "aspell")
+ '(haskell-process-type 'cabal-repl)
+ '(haskell-tags-on-save t)
+ '(haskell-process-suggest-remove-import-lines t)
  '(haskell-process-auto-import-loaded-modules t)
  '(haskell-process-log t)
  '(haskell-process-suggest-remove-import-lines t)
@@ -153,3 +204,7 @@
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
  '(default ((t (:family "Source Code Pro" :foundry "adobe" :slant normal :weight normal :height 98 :width normal)))))
+ )
+
+; Spelling
+(add-hook 'tex-mode-hook 'flyspell-mode)
